@@ -15,7 +15,10 @@ AINR 是一种专为空间转录组学设计的深度学习模型。该模型结
 ├── network.py              # 网络架构定义 (Encoder/Decoder/Transformer)
 ├── model.py                # 核心训练逻辑与数据加载
 ├── run.py                  # 命令行启动脚本与可视化
-└── README.md               # 项目说明
+├── README.md               # 项目说明
+└── .gitignore              # 忽略非代码文件
+
+
 
 
 🛠️ 环境要求
