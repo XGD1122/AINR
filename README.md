@@ -56,6 +56,10 @@ tissue_positions_list.csv           filter/norm/        Decoder 去噪
 
 两个 Demo 各自独立，可分别上传和运行。
 
+> **演示数据下载**：预处理后的 `.h5ad` 文件可从 Google Drive 获取：
+> https://drive.google.com/drive/folders/1EltGoufcGY4n-PCZtwN8SPJ8J_OaUUUj
+> 下载后放到项目根目录即可跳过 Demo ① 直接运行 Demo ②。
+
 ### Demo ①：3D 数据对齐与坐标构造
 
 ```bash
