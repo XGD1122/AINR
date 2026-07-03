@@ -1,2 +1,0 @@
-Experiment,Slices,Mean_ARI,PCA_Explained_Var,Train_Time_s,INR_Width,INR_Depth,TV,W0
-INR+PCA-50,151673_151674_151675_151676,0.5954,0.9451,280.7,160,3,1e-05,20.0
