@@ -4,7 +4,7 @@ from sklearn.metrics import confusion_matrix
 from model import Model
 import argparse
 import time
-import tracemalloc  # [NEW] 用于追踪 CPU 峰值内存
+import tracemalloc
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -70,19 +70,14 @@ model_instance = Model(
     inr_width=args.inr_width, inr_depth=args.inr_depth, dec_width=args.inr_width, dec_depth=args.inr_depth,omega_0=args.omega_0
 )
 
-# ==========================================
-# [NEW] 资源追踪开始 (响应 Reviewer 1 Q7)
-# ==========================================
 print("\n--- Starting Resource Tracking ---")
-tracemalloc.start()  # 开始追踪 CPU 内存
+tracemalloc.start()
 if torch.cuda.is_available():
-    torch.cuda.reset_peak_memory_stats()  # 重置 GPU 显存统计
+    torch.cuda.reset_peak_memory_stats()
 start_time = time.time()
 
-# 执行训练
 final_info = model_instance.train(report_loss=True, eval_interval=100, patience_steps=args.patience)
 
-# 计算耗时与内存
 end_time = time.time()
 runtime_seconds = end_time - start_time
 current_cpu_mem, peak_cpu_mem = tracemalloc.get_traced_memory()
@@ -94,11 +89,9 @@ print(f"\n[Computational Cost]")
 print(f"-> Runtime: {runtime_seconds:.2f} seconds")
 print(f"-> Peak CPU Memory: {peak_cpu_mb:.2f} MB")
 print(f"-> Peak GPU VRAM: {peak_gpu_mb:.2f} MB")
-# ==========================================
 
 best_avg_ari = final_info['avg_ari']
 
-# [UPDATE] 日志中增加时间和内存记录
 log_data = {
     "Time": [time.strftime("%Y-%m-%d %H:%M:%S")],
     "Tag": [exp_tag],
@@ -108,8 +101,8 @@ log_data = {
     "Width": [args.inr_width],
     "Depth": [args.inr_depth],
     "TV": [args.tv_weight],
-    "RW": [args.recon_weight],   # [UPDATE] 明确记录重构权重
-    "W0": [args.omega_0],        # [UPDATE] 明确记录 W0
+    "RW": [args.recon_weight],
+    "W0": [args.omega_0],
     "Best_ARI": [best_avg_ari],
     "Runtime(s)": [round(runtime_seconds, 2)],
     "Peak_CPU(MB)": [round(peak_cpu_mem, 2)],

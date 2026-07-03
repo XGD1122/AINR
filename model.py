@@ -33,7 +33,7 @@ class Model:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.save_path = save_path
         self.training_steps = training_steps
-        self.tv_weight = tv_weight  # [NEW] 保存 TV 损失的权重
+        self.tv_weight = tv_weight
 
         # 固定随机种子
         torch.manual_seed(seed)
@@ -46,7 +46,7 @@ class Model:
             "inr_width": inr_width, "inr_depth": inr_depth,
             "dec_width": dec_width, "dec_depth": dec_depth,
             "nhead": nhead, "recon_weight": recon_weight,
-            "omega_0": omega_0  # [UPDATE] 将 omega_0 加入参数字典
+            "omega_0": omega_0
         }
 
         print("Model.__init__: Loading data...")
@@ -90,8 +90,6 @@ class Model:
     def train(self, report_loss=True, eval_interval=100, patience_steps=2000):
         self.net.train()
         step, best_ari, patience_counter = 0, -1.0, 0
-
-        # [NEW] 初始化 Loss 记录器
         loss_history = []
 
         best_state = {'step': 0, 'avg_ari': -1.0, 'gmm_labels': None, 'latent': None, 'model_state': None}
@@ -105,7 +103,6 @@ class Model:
 
                 batch_coord, batch_X = batch_coord.to(self.device), batch_X.to(self.device)
 
-                # [UPDATE] 接收所有分项 Loss
                 total_loss, l_mid, l_final, l_tv, mid_fea, recon, Z_enc = self.net(batch_coord, batch_X,
                                                                                    tv_weight=self.tv_weight)
 
@@ -114,7 +111,6 @@ class Model:
                 self.optimizer.step()
                 step += 1
 
-                # [UPDATE] 记录每一步的 Loss
                 loss_history.append([step, total_loss.item(), l_mid.item(), l_final.item(), l_tv.item()])
 
                 if report_loss and step % 100 == 0:
@@ -142,9 +138,7 @@ class Model:
                         stop_training = True;
                         break
 
-        # ======================================================
-        # [NEW] 保存 Loss 曲线 (CSV 和 PDF)
-        # ======================================================
+        # 保存 Loss 曲线
         os.makedirs(self.save_path, exist_ok=True)
         df_loss = pd.DataFrame(loss_history, columns=['Step', 'Total', 'Mid', 'Final', 'TV'])
         df_loss.to_csv(os.path.join(self.save_path, "loss_history.csv"), index=False)
@@ -174,7 +168,6 @@ class Model:
                 final_latent_np = final_latent_tensor.cpu().numpy()
                 final_recon_np = final_recon_tensor.cpu().numpy()
 
-            # [NEW] 计算全局空间的梯度幅值 (Spatial Gradient) 用于绘制生物学边界
             print("Computing spatial gradients for boundary mapping...")
             eval_dataset = CustomDataset(self.coord.cpu(), self.X.cpu())
             eval_loader = DataLoader(eval_dataset, batch_size=2048, shuffle=False)
@@ -194,7 +187,7 @@ class Model:
                 'adata_st_list_raw': self.adata_st_list_raw,
                 'latent': final_latent_np,
                 'recon': final_recon_np,
-                'spatial_gradient': final_spatial_gradient, # 输出梯度值
+                'spatial_gradient': final_spatial_gradient,
                 'gmm_labels': final_labels,
                 'avg_ari': best_state['avg_ari']
             }
