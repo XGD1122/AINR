@@ -1,20 +1,59 @@
-# Exclude analysis documents (not code)
-*_analysis.md
-*_report.md
-*_methods.md
-*_section.md
-response_to_reviewer*.md
-AINR content.txt
-
-# Exclude experiment results
-results/
-
-# Exclude downloaded model repositories
-models/
-
-# Exclude Python cache
+# --- Python ---
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.egg-info/
+*.egg
+dist/
+build/
+*.so
 
-# Exclude project config
+# --- Jupyter ---
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# --- Data (large files, keep small demo data only) ---
+Data/*/
+!Data/demo/
+*.h5ad
+!Data/demo/*.h5ad
+
+# DLPFC annotations (large txt files)
+DLPFC_annotations/
+
+# --- Model outputs (large, generated) ---
+results_sweep/
+results_DLPFC_INR_RECON/
+inr_pca_results/
+demo/output/
+*.pth
+!Data/demo/*.pth
+
+# Previous experiments
+07-10/
+69-72/
+73-76/
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Environment ---
+.venv/
+venv/
+env/
 .claude/
+INR+PCA/
+ari.txt
+spatial_gradient_benchmark/ # benchmark subdir
+# Local experiment data
+models/
+results/
+__pycache__/
