@@ -1,0 +1,20 @@
+# Exclude analysis documents (not code)
+*_analysis.md
+*_report.md
+*_methods.md
+*_section.md
+response_to_reviewer*.md
+AINR content.txt
+
+# Exclude experiment results
+results/
+
+# Exclude downloaded model repositories
+models/
+
+# Exclude Python cache
+__pycache__/
+*.pyc
+
+# Exclude project config
+.claude/
